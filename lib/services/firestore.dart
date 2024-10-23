@@ -19,6 +19,11 @@ class FirestoreService {
   }
 
   // UPDATE: update notes given a doc id
+  Future<void> updateNotes(String docID, String updatedNote) {
+    return notes
+        .doc(docID)
+        .update({"notes": updatedNote, "timestamp": Timestamp.now()});
+  }
 
   // DELETE: delete notes given a doc id
 }
