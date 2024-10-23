@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_db/services/firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -55,6 +56,45 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: openNoteDialog,
         child: const Icon(Icons.add),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: firestoreService.getNotesStream(),
+        builder: (context, snapshot) {
+          // Check if snapshot is loading
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: CircularProgressIndicator()); // Show loading indicator
+          }
+
+          // Check if snapshot has data, then get docs
+          if (snapshot.hasData) {
+            List notesList = snapshot.data!.docs;
+
+            // Return a list view
+            return ListView.builder(
+              itemCount: notesList.length,
+              itemBuilder: (context, index) {
+                // Get individual doc
+                DocumentSnapshot document = notesList[index];
+                String docID = document.id;
+
+                // Get note for each doc
+                Map<String, dynamic> data =
+                    document.data() as Map<String, dynamic>;
+                String noteText = data["notes"]; // Correct key name
+
+                // Display list tile
+                return ListTile(
+                  title: Text(noteText),
+                );
+              },
+            );
+          } else {
+            return const Center(
+                child: Text(
+                    "No notes...")); // Display message when no notes are found
+          }
+        },
       ),
     );
   }
