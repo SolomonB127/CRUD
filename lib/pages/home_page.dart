@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pop(context);
                   },
                   child: const Text("Save"),
-                )
+                ),
               ],
             ));
   }
@@ -91,9 +91,20 @@ class _HomePageState extends State<HomePage> {
                 // Display list tile
                 return ListTile(
                   title: Text(noteText),
-                  trailing: IconButton(
-                      onPressed: () => openNoteDialog(docID: docID),
-                      icon: const Icon(Icons.settings)),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // update button
+                      IconButton(
+                          onPressed: () => openNoteDialog(docID: docID),
+                          icon: const Icon(Icons.settings)),
+
+                          // delete button
+                      IconButton(
+                          onPressed: () => firestoreService.deleteNote(docID),
+                          icon: const Icon(Icons.delete)),
+                    ],
+                  ),
                 );
               },
             );
